@@ -14,18 +14,34 @@
         tools:text="8.9" />
 
     <TextView
-        android:id="@+id/location"
-        android:layout_width="wrap_content"
+        android:id="@+id/locationOffset"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        tools:text="Bucaramanga, COL" />
+        tools:text="74 Km NW of" />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="Rumoi, Japan" />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="right"
         tools:text="Nov 6, 1986" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        tools:text="10:00 PM" />
 
 
 </LinearLayout>
