@@ -30,34 +30,32 @@ public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+    private EarthquakeAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-        task.execute(USGS_REQUEST_URL);
-
-    }
-
-    private void updateUi(final ArrayList<Earthquake> earthquakes) {
-
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
-        EarthquakeAdapter adapter = new EarthquakeAdapter(this, earthquakes);
-        earthquakeListView.setAdapter(adapter);
+        mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+        earthquakeListView.setAdapter(mAdapter);
 
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Earthquake earthquake = earthquakes.get(i);
-                String url = earthquake.getmUrl();
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Earthquake currentEarthquake = mAdapter.getItem(position);
+                String url = currentEarthquake.getmUrl();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
 
             }
         });
+
+        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+        task.execute(USGS_REQUEST_URL);
+
     }
 
     private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>> {
@@ -72,10 +70,13 @@ public class EarthquakeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
-            if (earthquakes == null) {
-                return;
+
+            mAdapter.clear();
+
+            if (earthquakes != null && !earthquakes.isEmpty()) {
+                mAdapter.addAll(earthquakes);
             }
-            updateUi(earthquakes);
+
         }
     }
 

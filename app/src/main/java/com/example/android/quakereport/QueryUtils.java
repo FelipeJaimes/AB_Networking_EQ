@@ -32,8 +32,8 @@ public final class QueryUtils {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error closing input stream", e);
         }
-
-        return extractFeatureFromJson(jsonResponse);
+        ArrayList<Earthquake> earthquakes = extractFeatureFromJson(jsonResponse);
+        return earthquakes;
     }
 
     private static URL createUrl(String stringUrl) {
