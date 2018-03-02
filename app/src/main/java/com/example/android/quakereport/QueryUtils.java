@@ -25,6 +25,14 @@ public final class QueryUtils {
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     public static ArrayList<Earthquake> fetchEarthquakeData(String requestUrl) {
+
+        //Here we sleep the thread for 2 seconds, so we can display the progress bar
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
         try {

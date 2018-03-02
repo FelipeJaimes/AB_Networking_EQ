@@ -16,8 +16,11 @@
 package com.example.android.quakereport;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +29,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     private EarthquakeAdapter mAdapter;
     private static final int EARTHQUAKE_LOADER_ID = 1;
     private TextView mEmptyStateTextView;
+    private ProgressBar mProgresBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +50,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        mProgresBar = (ProgressBar) findViewById(R.id.progress_bar);
         earthquakeListView.setEmptyView(mEmptyStateTextView);
+
 
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
         earthquakeListView.setAdapter(mAdapter);
@@ -99,7 +106,14 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<ArrayList<Earthquake>> loader, ArrayList<Earthquake> earthquakes) {
-        mEmptyStateTextView.setText(R.string.no_earthquakes);
+        mProgresBar.setVisibility(View.GONE);
+
+        if (checkInternetConnection()){
+            mEmptyStateTextView.setText(R.string.no_earthquakes);
+        } else {
+            mEmptyStateTextView.setText(R.string.no_internet_connection);
+        }
+
         mAdapter.clear();
 
         if (earthquakes != null && !earthquakes.isEmpty()) {
@@ -110,5 +124,16 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     @Override
     public void onLoaderReset(Loader<ArrayList<Earthquake>> loader) {
         mAdapter.clear();
+    }
+
+    public boolean checkInternetConnection (){
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return connected = true;
+        }
+        else
+            return connected = false;
     }
 }
